@@ -7,6 +7,7 @@
              xmlns:local="clr-namespace:Civ4_Leader_Changer"
              mc:Ignorable="d" Height="220" Width="223" VerticalAlignment="Top" BorderBrush="Black" BorderThickness="1">
     <UserControl.Resources>
+        <!--This DataProvider uses Enum.GetNames to turn the enum LeaderType into a list of strings that can be bound to a ComboBox to populate it-->
         <ObjectDataProvider x:Key="LeaderTypeData" MethodName="GetValues"
                             ObjectType="{x:Type System:Enum}">
             <ObjectDataProvider.MethodParameters>
@@ -14,6 +15,7 @@
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
 
+        <!--This DataProvider uses Enum.GetNames to turn the enum PlayerColor into a list of strings that can be bound to a ComboBox to populate it-->
         <ObjectDataProvider x:Key="PlayerColorData" MethodName="GetValues"
                             ObjectType="{x:Type System:Enum}">
             <ObjectDataProvider.MethodParameters>
@@ -22,21 +24,29 @@
         </ObjectDataProvider>
     </UserControl.Resources>
     <Grid Margin="10">
+        <!--Label and ComboBox for the leader type selection. The ComboBox binds to one of the above DataProviders to fill out the entries, and 
+            binds the selected item to "leader.Type" ("leader" being the DataContext for this panel)-->
         <Label Content="Leader" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <ComboBox x:Name="LeaderTypeBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Margin="51,0,0,0"
                   ItemsSource="{Binding Source={StaticResource LeaderTypeData}}"
                   SelectedItem="{Binding Type}"/>
 
+        <!--Label and TextBox for the leader name. The TextBox binds its text to "leader.Name"-->
         <Label Content="Name" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,27,0,0"/>
         <TextBox Text="{Binding Name}" HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" VerticalAlignment="Top" Width="150" Margin="51,27,0,0"/>
 
+        <!--Label and ComboBox for the player color selection. The ComboBox binds to one of the above DataProviders to fill out the entries, and 
+            binds the selected item to "leader.Color"-->
         <Label Content="Color" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,55,0,0"/>
         <ComboBox x:Name="ColorBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Margin="51,55,0,0"
                   ItemsSource="{Binding Source={StaticResource PlayerColorData}}"
                   SelectedItem="{Binding Path=Color}" SelectionChanged="ColorBox_SelectionChanged" Initialized="ColorBox_Initialized"/>
+        
+        <!--Two Rectangles used to display the chosen player colors. bgRect displays the major (background) color, while outRect displays the minor (outline) color-->
         <Rectangle x:Name="bgRect" HorizontalAlignment="Left" Height="100" Margin="0,86,0,0" Stroke="Black" VerticalAlignment="Top" Width="40" Initialized="BgRect_Initialized"/>
         <Rectangle x:Name="outRect" HorizontalAlignment="Left" Height="20" Margin="15,126,0,0" Stroke="Black" VerticalAlignment="Top" Width="10" Initialized="OutRect_Initialized" StrokeThickness="0"/>
 
+        <!--StackPanel which is dynamically filled in code - look at "AddCheckBoxes" in "LeaderPanel.xaml.cs"-->
         <StackPanel x:Name="TechPanel" HorizontalAlignment="Left" Height="118" VerticalAlignment="Top" Width="150" Margin="51,82,0,0"/>
     </Grid>
 </UserControl>

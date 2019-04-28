@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Civ4_Leader_Changer
 {
+    // Each leader has a PlayerColor for their civilization.
+    // Each PlayerColor has a major and a minor color (and a text color, but I ignore that here) - this is defined further down
+    // PlayerColor is out here and public because this is the bit all the other parts need to see. Almost everything else here is private and hidden
     public enum PlayerColor
     {
         BLACK,
@@ -57,6 +60,29 @@ namespace Civ4_Leader_Changer
 
     static class PlayerColors
     {
+        // Public methods:
+        // Get the major (background) color from a PlayerColor
+        // Returns a Brush that can be used to paint WPF elements
+        public static Brush getBackground(PlayerColor pc)
+        {
+            var colors = playerColorDictionary[pc];
+            var bg = gameColorDictionary[colors.Item1];
+            return new SolidColorBrush(Color.FromScRgb(bg.a, bg.r, bg.g, bg.b));
+        }
+
+        // Get the minor (outline) color from a PlayerColor
+        // Returns a Brush that can be used to paint WPF elements
+        public static Brush getOutline(PlayerColor pc)
+        {
+            var colors = playerColorDictionary[pc];
+            var ol = gameColorDictionary[colors.Item2];
+            return new SolidColorBrush(Color.FromScRgb(ol.a, ol.r, ol.g, ol.b));
+        }
+
+        // Rest is private data.
+
+        // As mentioned, each PlayerColor has a major and minor color - those two are GameColors.
+        // These map to actual RGB values further down.
         private enum GameColor
         {
             COLOR_PLAYER_BLACK,
@@ -104,12 +130,17 @@ namespace Civ4_Leader_Changer
             COLOR_PLAYER_CYAN_TEXT
         }
 
+        // Struct for holding RGB+Alpha values - Prettier than using a Tuple<float,float,float,float> with unnamed (item1-4) fields.
         private struct ColorStruct
         {
             internal float r, g, b, a;
+            // Constructor takes values as ARGB - this is because "Color.FromScRgb" goes in that order, and when I remembered that
+            //  that didn't matter here, I had already populated the "gameColorDictionary" down below. By that time it was easier to change
+            //  the order in the constructor than regex all those floats into a RGBA order... :)
             internal ColorStruct(float a, float r, float g, float b) { this.r = r; this.g = g; this.b = b; this.a = a; }
         }
 
+        // Dictionary linking the PlayerColors to their major and minor GameColors
         private static readonly Dictionary<PlayerColor, Tuple<GameColor, GameColor>> playerColorDictionary = new Dictionary<PlayerColor, Tuple<GameColor, GameColor>>()
         {
             {PlayerColor.BLACK, Tuple.Create(GameColor.COLOR_PLAYER_BLACK, GameColor.COLOR_PLAYER_WHITE) },
@@ -158,6 +189,7 @@ namespace Civ4_Leader_Changer
             {PlayerColor.YELLOW, Tuple.Create(GameColor.COLOR_PLAYER_YELLOW, GameColor.COLOR_PLAYER_DARK_BLUE) }
         };
 
+        // Dictionary linking the GameColors to RGB values - exact values are taken from a Civ4 resource file.
         private static readonly Dictionary<GameColor, ColorStruct> gameColorDictionary = new Dictionary<GameColor, ColorStruct>()
         {
             {GameColor.COLOR_PLAYER_BLACK, new ColorStruct(1.00f, 0.13f, 0.13f, 0.13f) },
@@ -204,19 +236,5 @@ namespace Civ4_Leader_Changer
             {GameColor.COLOR_PLAYER_DARK_CYAN_TEXT, new ColorStruct(1.00f, 0f, .831f, .788f) },
             {GameColor.COLOR_PLAYER_CYAN_TEXT, new ColorStruct(1.00f, 0.6f, 1.0f, 0.973f) }
         };
-
-        public static Brush getBackground(PlayerColor pc)
-        {
-            var colors = playerColorDictionary[pc];
-            var bg = gameColorDictionary[colors.Item1];
-            return new SolidColorBrush(Color.FromScRgb(bg.a, bg.r, bg.g, bg.b));
-        }
-
-        public static Brush getOutline(PlayerColor pc)
-        {
-            var colors = playerColorDictionary[pc];
-            var ol = gameColorDictionary[colors.Item2];
-            return new SolidColorBrush(Color.FromScRgb(ol.a, ol.r, ol.g, ol.b));
-        }
     }
 }

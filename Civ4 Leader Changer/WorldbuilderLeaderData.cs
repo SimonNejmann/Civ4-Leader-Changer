@@ -1,5 +1,9 @@
 ﻿using System.Collections.Generic;
 
+/*
+ * This file contains only a single thing: The monster dictionary that defines default values for all the leaders in the game
+ */
+
 namespace Civ4_Leader_Changer
 {
     class WorldbuilderLeaderData

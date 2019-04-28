@@ -7,15 +7,18 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="280" Width="985">
     <Grid>
+         <!--Everything is located in a Grid with two columns and one row-->
         <Grid.ColumnDefinitions>
             <ColumnDefinition MaxWidth="75" MinWidth="75"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Button Content="Load" Margin="10,0,0,35" Click="LoadButton_Click" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="55"/>
         <Button Content="Save" Margin="10,0,0,10" Click="SaveButton_Click" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="55"/>
+         <!--Place the ScrollView around the StackPanel because the scrolling breaks the other way around--> 
         <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Auto" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Bottom">
             <StackPanel x:Name="LeaderStack" Orientation="Horizontal" Grid.Column="1" Margin="0"/>
         </ScrollViewer>
+        <!--Place a TextBlock inside to enable text wrapping-->
         <Button x:Name="DeityTechs" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="55" Margin="10,0,0,88" Click="DeityTechs_Click">
             <TextBlock Text="Add deity techs" TextWrapping="Wrap" TextAlignment="Center"/>
         </Button>

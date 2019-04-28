@@ -3,6 +3,8 @@ using System.ComponentModel;
 
 namespace Civ4_Leader_Changer
 {
+    // Enum of all the leaders in the game - most aspects of the leader is defined by setting the right type in the leader.
+    // This enum is also used as the key to the dictionary in "WorldbuilderLeaderData"
     public enum LeaderType
     {
         NONE,
@@ -60,6 +62,9 @@ namespace Civ4_Leader_Changer
         LEADER_ZARA_YAQOB
     }
 
+    // Enum defining the starting techs for the civs - flag because a civ can have zero or all of these at the same time.
+    // Technically this could be made to hold ALL the techs in the game, but that would make for a stupidly huge enum, and
+    //  99% of them would never be set as starting techs, so it would be wasted work
     [Flags]
     public enum Tech
     {
@@ -73,8 +78,17 @@ namespace Civ4_Leader_Changer
         MYSTICISM = 0b1000000
     }
 
+    // Class holding a leader that was read from a savegame (and possibly edited). Inherits from "INotifyPropertyChanged" to
+    //  enable data bindings with WPF controls
     public class WorldbuilderLeader : INotifyPropertyChanged
     {
+        // Type, Name, Color, and Techs are the properties that are interesting to change in the leader - therefore they are
+        //  implemented with the "NotifyPropertyChanged" pattern.
+
+        // The rest of the public fields are things that the Parser reads from a save file, and that we need to remember for
+        //  when we write. The private fields is stuff that only depend on the LeaderType, and which we never change except
+        //  when the LeaderType does
+
         private LeaderType type;
         public LeaderType Type
         {
@@ -83,6 +97,8 @@ namespace Civ4_Leader_Changer
             {
                 if (this.type != value)
                 {
+                    // When the type is changed, the rest of the leader needs to be updated with new default values. Do this
+                    //  in the correct order, so that the "CopyFrom" doesn't trigger a recursive cascade of notifications.
                     this.type = value;
                     this.CopyFrom(WorldbuilderLeaderData.leaderDictionary[value]);
                     this.NotifyPropertyChanged("Type");
@@ -97,6 +113,7 @@ namespace Civ4_Leader_Changer
             {
                 if (this.name != value)
                 {
+                    // If the custom name is deleted, replace it with the default name for the leader
                     if (value != "")
                         this.name = value;
                     else
@@ -147,6 +164,7 @@ namespace Civ4_Leader_Changer
         public string artStyle { get; private set; }
         public Tech defaultTechs { get; private set; }
 
+        // Default constructor - used in the parser when it reads a new leader in
         public WorldbuilderLeader()
         {
             this.Type = LeaderType.NONE;
@@ -169,13 +187,14 @@ namespace Civ4_Leader_Changer
             this.defaultTechs = defaultTechs;
         }
 
+        // When the LeaderType is changed, this is used to reset everything to defaults for the new type.
         public void CopyFrom(WorldbuilderLeader other)
         {
             this.Name = other.defaultName;
             this.Color = other.defaultColor;
             this.Techs = other.defaultTechs;
-
             this.Type = other.type;
+
             this.leaderType = other.leaderType;
             this.defaultName = other.defaultName;
             this.civDesc = other.civDesc;
@@ -188,6 +207,7 @@ namespace Civ4_Leader_Changer
             this.defaultTechs = other.defaultTechs;
         }
 
+        // "INotifyPropertyChanged" interface stuff - again, enables data bindings with WPF controls
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void NotifyPropertyChanged(string propName)
