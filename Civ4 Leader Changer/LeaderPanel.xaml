@@ -1,0 +1,42 @@
+﻿<UserControl x:Class="Civ4_Leader_Changer.LeaderPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:System="clr-namespace:System;assembly=mscorlib"
+             xmlns:local="clr-namespace:Civ4_Leader_Changer"
+             mc:Ignorable="d" Height="220" Width="223" VerticalAlignment="Top" BorderBrush="Black" BorderThickness="1">
+    <UserControl.Resources>
+        <ObjectDataProvider x:Key="LeaderTypeData" MethodName="GetValues"
+                            ObjectType="{x:Type System:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="local:LeaderType"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+
+        <ObjectDataProvider x:Key="PlayerColorData" MethodName="GetValues"
+                            ObjectType="{x:Type System:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="local:PlayerColor"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </UserControl.Resources>
+    <Grid Margin="10">
+        <Label Content="Leader" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <ComboBox x:Name="LeaderTypeBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Margin="51,0,0,0"
+                  ItemsSource="{Binding Source={StaticResource LeaderTypeData}}"
+                  SelectedItem="{Binding Type}"/>
+
+        <Label Content="Name" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,27,0,0"/>
+        <TextBox Text="{Binding Name}" HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" VerticalAlignment="Top" Width="150" Margin="51,27,0,0"/>
+
+        <Label Content="Color" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,55,0,0"/>
+        <ComboBox x:Name="ColorBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Margin="51,55,0,0"
+                  ItemsSource="{Binding Source={StaticResource PlayerColorData}}"
+                  SelectedItem="{Binding Path=Color}" SelectionChanged="ColorBox_SelectionChanged" Initialized="ColorBox_Initialized"/>
+        <Rectangle x:Name="bgRect" HorizontalAlignment="Left" Height="100" Margin="0,86,0,0" Stroke="Black" VerticalAlignment="Top" Width="40" Initialized="BgRect_Initialized"/>
+        <Rectangle x:Name="outRect" HorizontalAlignment="Left" Height="20" Margin="15,126,0,0" Stroke="Black" VerticalAlignment="Top" Width="10" Initialized="OutRect_Initialized" StrokeThickness="0"/>
+
+        <StackPanel x:Name="TechPanel" HorizontalAlignment="Left" Height="118" VerticalAlignment="Top" Width="150" Margin="51,82,0,0"/>
+    </Grid>
+</UserControl>
